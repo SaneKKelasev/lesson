@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ article.slug }} {% endblock %}
+
+{% block meta %} {{ article.keywords ? article.keywords }} {% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/detail.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="row no-gutters border flex-md-row mb-4 shadow-sm bg-white featured-border">
+                    <div class="article-detail col-sm-12">
+                        <div class="col-sm-12 p-2">
+                            <div class="media d-flex align-content-center">
+                                <a href="{{ upload_file('article_uploads', article.imageFileName) }}" target="_blank">
+                                    <img
+                                            class="article-detail-image align-self-start mr-3 rounded"
+                                            src="{{ article.imageFilename | imagine_filter('articles_detail') }}">
+                                </a>
+                                <div class="media-body d-inline-block align-self-center">
+                                    <h1 class="mb-2">{{ article.title }}-Symfony-проект</h1>
+                                    <div class="d-flex mb-2">
+                                        <div class="text-muted align-self-center">
+                                            <img class="article-author-img rounded-circle mr-2" src="https://robohash.org/флекс_абсолютович.jpg?set=set3">
+                                            {{ article.author.firstName }}
+                                        </div>
+                                        <div class="text-muted align-self-center ml-4">
+                                            <i class="fas fa-clock size-is-"></i>
+                                            {{ article.publishedAt ? article.publishedAt|ago }}
+                                        </div>
+                                    </div>
+                                    <div class="mb-2 d-flex">
+                                        {% for tag in article.tags %}
+                                            <span class="badge badge-pill badge-secondary mr-2">{{ tag.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="mb-2">
+                                        <div
+                                                class="text-muted align-self-center article-detail-arrows"
+                                                data-id="voteBlock">
+                                            <span
+                                                    class="{{ article.voteCount > 0 ? 'text-success' : 'text-danger'}}"
+                                                    data-id="voteCount">
+                                                {{ article.voteCount ? article.voteCount : 0 }}
+                                            </span>
+                                            <button
+                                                    class="btn btn-success ml-3"
+                                                    data-id="voteButton"
+                                                    data-href="{{ path('app_articles_vote', {slug: article.slug, type: "up"}) }}">
+                                                <i class="fas fa-arrow-up"></i>
+                                            </button>
+                                            <button
+                                                    class="btn btn-danger"
+                                                    data-id="voteButton"
+                                                    data-href="{{ path('app_articles_vote', {slug: article.slug, type: "down"}) }}">
+                                                <i class="fas fa-arrow-down"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-12 mt-2 mb-4">
+                           {{ article.body|markdown_to_html }}
+                        </div>
+
+
+                        <div class="col-sm-12 mb-4">
+                            <h3><i class="pr-3 far fa-comment text-secondary"></i>{{ article.nonDeletedComments|length }}</h3>
+                            <hr>
+
+                            <div class="row mb-4">
+                                <div class="col-sm-12">
+                                    <div class="comment-container align-self-start col-sm-6">
+                                        <div class="form-group">
+                                            <textarea class="form-control" rows="2"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Комментировать</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% for comment in article.nonDeletedComments %}
+                            <div class="row mt-2">
+                                <div class="col-sm-12">
+                                    <div class="media">
+                                        <img class="align-self-start comment-img rounded-circle" src="{{ asset('images/profile.png') }}">
+                                        <div class="media-body align-self-start col-sm-6">
+                                            <b>{{ comment.authorName }}</b>
+                                            <small>
+                                                {{ comment.createdAt|ago }}
+                                                {{ comment.deletedAt ? 'DELTED' }}
+                                            </small>
+                                            <br>
+                                            <span class="comment">{{ comment.content }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

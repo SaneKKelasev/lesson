@@ -1,0 +1,13 @@
+{{ form_start(article) }}
+    {% if article.vars.data.imageFilename|default %}
+        <img src="{{ article.vars.data.imageFilename | imagine_filter('articles_preview') }}" alt="">
+    {% endif %}
+                        {{ form_row(article.image) }}
+                        {{ form_row(article.title) }}
+                        {{ form_row(article.description) }}
+                        {{ form_row(article.body) }}
+                        {{ form_row(article.publishedAt) }}
+                        {{ form_row(article.keywords) }}
+                        {{ form_row(article.author) }}
+<button type="submit" class="btn btn-primary">{{ button_text }}</button>
+{{ form_end(article) }}

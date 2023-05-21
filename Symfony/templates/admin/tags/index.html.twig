@@ -1,0 +1,61 @@
+{% extends 'base_content.html.twig' %}
+
+{% block title %}Управление Комментариями{% endblock %}
+
+{% block body_content %}
+    <h1>Управление комментариями</h1>
+
+    <form>
+        <div class="input-group mb-3">
+            <input type="text"
+                   name="q"
+                   class="form-control"
+                   placeholder="Найти..."
+                   value="{{ app.request.query.get('q') }}"
+            >
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-outline-secondary"><i class="fa fa-search"></i></button>
+            </div>
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input type="checkbox"
+                           name="isDeleted"
+                           class="form-check-input"
+                            {% if app.request.query.has('isDeleted') %} checked {% endif %}
+                    >
+                    Показать удаленные </label>
+            </div>
+        </div>
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Название</th>
+            <th>Символьный код</th>
+            <th>Количество статей</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for tag in pagination %}
+            <tr>
+                <td>
+                    <a href="{{ path('app_admin_tags', { slug: tag.slug }) }}">
+                        {{ tag.name }}
+                    </a>
+                </td>
+                <td>{{ tag.slug }}</td>
+                <td>{{ tag.articles|length }} {{ tag.deletedAt ? 'DELETED' }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Содержиого с таким словом нету</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {{ knp_pagination_render(pagination) }}
+{% endblock %}
